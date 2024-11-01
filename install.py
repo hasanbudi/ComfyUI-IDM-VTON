@@ -22,7 +22,14 @@ def ensure_package():
     cmds = build_pip_install_cmds(['-r', 'requirements.txt'])
     subprocess.run(cmds, cwd=CUSTOM_NODES_PATH)
 
+def check_and_download_model():
+    # Cek apakah folder model sudah terisi
+    if not os.listdir(WEIGHTS_PATH):  # Jika folder kosong, download model
+        print("Downloading model as the directory is empty...")
+        snapshot_download(repo_id=HF_REPO_ID, local_dir=WEIGHTS_PATH, local_dir_use_symlinks=False)
+    else:
+        print("Model already exists, skipping download...")
 
 if __name__ == "__main__":
     ensure_package()
-    snapshot_download(repo_id=HF_REPO_ID, local_dir=WEIGHTS_PATH, local_dir_use_symlinks=False)
+    check_and_download_model()
